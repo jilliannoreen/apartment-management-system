@@ -77,6 +77,8 @@ public class LoginRegister extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("/images/logo.png")).getImage()
+        );
         setUndecorated(true);
 
         jPanel1.setBackground(new java.awt.Color(19, 34, 53));

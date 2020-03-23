@@ -17,6 +17,7 @@ import java.awt.*;
 import java.awt.print.PrinterException;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 /**
@@ -36,10 +37,16 @@ public class UserDashboard extends javax.swing.JFrame {
     private static int user_id, apartmentID, i, unitID;
     private Connection conn = null;   
     public static int TF = 0;
+    DefaultListModel list = new DefaultListModel();
     
+
     public UserDashboard(int id) {
         initComponents();
         user_id = id;
+        jFrame1.setLocationRelativeTo(null);
+        jFrame1.setBounds(895, 450, 380, 240);
+        jFrame1.setSize(380,240);
+        
         setLocationRelativeTo(null);
         try{
             String sql = "jdbc:mysql://localhost/apartment_db";
@@ -62,6 +69,7 @@ public class UserDashboard extends javax.swing.JFrame {
         //dashboardpanels.add(apartpanel);
         //dashboardpanels.add(unitpanel);
         //dashboardpanels.add(viewpanel);
+        jFrame1.setVisible(false);
         addUnitPanel.setVisible(false);
         apartpanel.setVisible(false); 
         viewpanel.setVisible(false); 
@@ -120,7 +128,7 @@ public class UserDashboard extends javax.swing.JFrame {
                 apartmentID = rs.getInt("aID");
                 
                 nameApartLO.setText(apartmentName);
-                addressLO.setText(address);
+                jTextArea1.setText(address);
                 ownerLO.setText(owner);
                 ownerLO1.setText(owner);
             }
@@ -136,7 +144,6 @@ public class UserDashboard extends javax.swing.JFrame {
         {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt (1, apartmentID);
-            DefaultListModel list = new DefaultListModel();
             ResultSet rs = preparedStmt.executeQuery();
             while(rs.next())
             {
@@ -155,6 +162,41 @@ public class UserDashboard extends javax.swing.JFrame {
         }
         
     }
+    
+    
+    private ArrayList getUnit(){
+        ArrayList unitList = new ArrayList();
+        String query = "SELECT * FROM units WHERE apartment_id = ? ORDER BY unit_name";
+        try
+        {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt (1, apartmentID);
+            ResultSet rs = preparedStmt.executeQuery();
+            while(rs.next())
+            {
+                unitList.add(rs.getString("unit_name"));
+            } 
+        }
+        catch(SQLException e)
+        {
+            System.err.println(e);
+        }
+        return unitList;
+    }
+    
+    private void searchFilter(String searchItem){
+        DefaultListModel filteredlist = new DefaultListModel();
+        ArrayList unit = getUnit();
+        
+        unit.stream().forEach((units) -> {
+            String unitName = units.toString().toLowerCase();
+            if(unitName.contains(searchItem.toLowerCase())){
+                filteredlist.addElement(units);
+            }
+        });
+        list = filteredlist;
+        jList1.setModel(list);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -165,7 +207,14 @@ public class UserDashboard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel12 = new javax.swing.JLabel();
+        jFrame1 = new javax.swing.JFrame();
+        jPanel2 = new javax.swing.JPanel();
+        closeb = new javax.swing.JButton();
+        viewB1 = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        unitPriceLO = new javax.swing.JLabel();
+        statusLO = new javax.swing.JLabel();
+        tenantLO = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         toppanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -177,7 +226,17 @@ public class UserDashboard extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jLabel18 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
         dashboardpanels = new javax.swing.JPanel();
+        unitpanel = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
+        jLabel3 = new javax.swing.JLabel();
+        addB = new javax.swing.JButton();
+        deleteB = new javax.swing.JButton();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
         addClearTenantP = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -189,6 +248,72 @@ public class UserDashboard extends javax.swing.JFrame {
         addTLNameTF = new javax.swing.JTextField();
         back = new javax.swing.JButton();
         addTenantError = new javax.swing.JLabel();
+        jLabel27 = new javax.swing.JLabel();
+        paymentPanel = new javax.swing.JPanel();
+        jLabel17 = new javax.swing.JLabel();
+        rentPayL = new javax.swing.JLabel();
+        rentPayL1 = new javax.swing.JLabel();
+        rentPayL2 = new javax.swing.JLabel();
+        rentPTF = new javax.swing.JTextField();
+        waterPTF = new javax.swing.JTextField();
+        elecPTF = new javax.swing.JTextField();
+        useAdvanceB = new javax.swing.JRadioButton();
+        genReceiptB = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        paymentTA = new javax.swing.JTextArea();
+        printPB = new javax.swing.JButton();
+        addToAdvance = new javax.swing.JRadioButton();
+        back5 = new javax.swing.JButton();
+        PaymentError = new javax.swing.JLabel();
+        billingpanel = new javax.swing.JPanel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        waterTF = new javax.swing.JTextField();
+        electricTF = new javax.swing.JTextField();
+        genBillB = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        BillTA = new javax.swing.JTextArea();
+        printBillB = new javax.swing.JButton();
+        back4 = new javax.swing.JButton();
+        BillingError = new javax.swing.JLabel();
+        addUnitPanel = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        addUnitName = new javax.swing.JTextField();
+        addUnitPrice = new javax.swing.JTextField();
+        addUnitType = new javax.swing.JTextField();
+        jButton5 = new javax.swing.JButton();
+        back3 = new javax.swing.JButton();
+        xxx = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
+        apartpanel = new javax.swing.JPanel();
+        nameApartL = new javax.swing.JLabel();
+        addressL = new javax.swing.JLabel();
+        numofunitsL = new javax.swing.JLabel();
+        nameApartLO = new javax.swing.JLabel();
+        numofunitsLO = new javax.swing.JLabel();
+        ownerL = new javax.swing.JLabel();
+        ownerLO = new javax.swing.JLabel();
+        editApartmentB = new javax.swing.JButton();
+        jLabel21 = new javax.swing.JLabel();
+        jTextArea1 = new javax.swing.JTextArea();
+        jLabel23 = new javax.swing.JLabel();
+        editApartmentP = new javax.swing.JPanel();
+        nameApartL1 = new javax.swing.JLabel();
+        addressL1 = new javax.swing.JLabel();
+        numofunitsL1 = new javax.swing.JLabel();
+        ownerL1 = new javax.swing.JLabel();
+        editANameTF = new javax.swing.JTextField();
+        editAAddTF = new javax.swing.JTextField();
+        numofunitsLO1 = new javax.swing.JLabel();
+        ownerLO1 = new javax.swing.JLabel();
+        jButton6 = new javax.swing.JButton();
+        jLabel20 = new javax.swing.JLabel();
+        back1 = new javax.swing.JButton();
+        jLabel25 = new javax.swing.JLabel();
         viewpanel = new javax.swing.JPanel();
         unitNameLO = new javax.swing.JLabel();
         tenantNameL = new javax.swing.JLabel();
@@ -210,91 +335,108 @@ public class UserDashboard extends javax.swing.JFrame {
         AddClearB = new javax.swing.JButton();
         back2 = new javax.swing.JButton();
         ClearError = new javax.swing.JLabel();
-        unitpanel = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        unitPriceLO = new javax.swing.JLabel();
-        statusLO = new javax.swing.JLabel();
-        tenantLO = new javax.swing.JLabel();
-        addB = new javax.swing.JButton();
-        viewB = new javax.swing.JButton();
-        deleteB = new javax.swing.JButton();
-        billingpanel = new javax.swing.JPanel();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        waterTF = new javax.swing.JTextField();
-        electricTF = new javax.swing.JTextField();
-        genBillB = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        BillTA = new javax.swing.JTextArea();
-        printBillB = new javax.swing.JButton();
-        back4 = new javax.swing.JButton();
-        BillingError = new javax.swing.JLabel();
-        paymentPanel = new javax.swing.JPanel();
-        jLabel17 = new javax.swing.JLabel();
-        rentPayL = new javax.swing.JLabel();
-        rentPayL1 = new javax.swing.JLabel();
-        rentPayL2 = new javax.swing.JLabel();
-        rentPTF = new javax.swing.JTextField();
-        waterPTF = new javax.swing.JTextField();
-        elecPTF = new javax.swing.JTextField();
-        useAdvanceB = new javax.swing.JRadioButton();
-        genReceiptB = new javax.swing.JButton();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        paymentTA = new javax.swing.JTextArea();
-        printPB = new javax.swing.JButton();
-        addToAdvance = new javax.swing.JRadioButton();
-        back5 = new javax.swing.JButton();
-        PaymentError = new javax.swing.JLabel();
-        addUnitPanel = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        addUnitName = new javax.swing.JTextField();
-        addUnitPrice = new javax.swing.JTextField();
-        addUnitType = new javax.swing.JTextField();
-        jButton5 = new javax.swing.JButton();
-        back3 = new javax.swing.JButton();
-        xxx = new javax.swing.JLabel();
-        editApartmentP = new javax.swing.JPanel();
-        nameApartL1 = new javax.swing.JLabel();
-        addressL1 = new javax.swing.JLabel();
-        numofunitsL1 = new javax.swing.JLabel();
-        ownerL1 = new javax.swing.JLabel();
-        editANameTF = new javax.swing.JTextField();
-        editAAddTF = new javax.swing.JTextField();
-        numofunitsLO1 = new javax.swing.JLabel();
-        ownerLO1 = new javax.swing.JLabel();
-        jButton6 = new javax.swing.JButton();
-        jLabel20 = new javax.swing.JLabel();
-        back1 = new javax.swing.JButton();
-        apartpanel = new javax.swing.JPanel();
-        nameApartL = new javax.swing.JLabel();
-        addressL = new javax.swing.JLabel();
-        numofunitsL = new javax.swing.JLabel();
-        nameApartLO = new javax.swing.JLabel();
-        addressLO = new javax.swing.JLabel();
-        numofunitsLO = new javax.swing.JLabel();
-        ownerL = new javax.swing.JLabel();
-        ownerLO = new javax.swing.JLabel();
-        editApartmentB = new javax.swing.JButton();
-        jLabel21 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
         logopanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
 
-        jLabel12.setText("jLabel12");
+        jFrame1.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jFrame1.setAlwaysOnTop(true);
+        jFrame1.setIconImage(new javax.swing.ImageIcon(getClass().getResource("/images/logo.png")).getImage());
+        jFrame1.setLocationByPlatform(true);
+        jFrame1.setUndecorated(true);
+
+        jPanel2.setBackground(new java.awt.Color(19, 35, 53));
+
+        closeb.setBackground(new java.awt.Color(92, 225, 230));
+        closeb.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        closeb.setText("View More");
+        closeb.setToolTipText("");
+        closeb.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closebActionPerformed(evt);
+            }
+        });
+
+        viewB1.setBackground(new java.awt.Color(92, 225, 230));
+        viewB1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        viewB1.setText("Close");
+        viewB1.setToolTipText("");
+        viewB1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewB1ActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setFont(new java.awt.Font("Yu Gothic Medium", 1, 18)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+
+        unitPriceLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        unitPriceLO.setForeground(new java.awt.Color(255, 255, 255));
+
+        statusLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        statusLO.setForeground(new java.awt.Color(255, 255, 255));
+
+        tenantLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        tenantLO.setForeground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(57, 57, 57)
+                .addComponent(viewB1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(71, 71, 71)
+                .addComponent(closeb)
+                .addContainerGap(56, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tenantLO, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(statusLO, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(unitPriceLO, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(77, 77, 77))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(26, Short.MAX_VALUE)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(17, 17, 17)
+                .addComponent(unitPriceLO, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(statusLO, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tenantLO, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(closeb)
+                    .addComponent(viewB1))
+                .addGap(30, 30, 30))
+        );
+
+        javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
+        jFrame1.getContentPane().setLayout(jFrame1Layout);
+        jFrame1Layout.setHorizontalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+        jFrame1Layout.setVerticalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
+        jFrame1.getAccessibleContext().setAccessibleParent(unitpanel);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("/images/logo.png")).getImage());
         setUndecorated(true);
 
-        jPanel1.setBackground(new java.awt.Color(19, 34, 53));
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        toppanel.setBackground(new java.awt.Color(19, 255, 230));
+        toppanel.setBackground(new java.awt.Color(92, 225, 230));
         toppanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 24)); // NOI18N
@@ -315,7 +457,7 @@ public class UserDashboard extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        toppanel.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 0, 40, 50));
+        toppanel.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 0, 40, 50));
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8s-close-window-35.png"))); // NOI18N
         jButton3.setBorder(null);
@@ -330,16 +472,17 @@ public class UserDashboard extends javax.swing.JFrame {
                 jButton3ActionPerformed(evt);
             }
         });
-        toppanel.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 0, 40, 50));
+        toppanel.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 0, 40, 50));
 
-        jPanel1.add(toppanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 810, 50));
+        jPanel1.add(toppanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 950, 50));
 
         sidebarpanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton2.setBackground(new java.awt.Color(19, 255, 230));
+        jButton2.setBackground(new java.awt.Color(92, 225, 230));
         jButton2.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 18)); // NOI18N
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-exit-30.png"))); // NOI18N
         jButton2.setText("Log out    ");
+        jButton2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jButton2.setFocusable(false);
         jButton2.setIconTextGap(10);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -347,14 +490,14 @@ public class UserDashboard extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
-        sidebarpanel.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 310, 240, 50));
+        sidebarpanel.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 420, 230, 50));
 
-        jButton7.setBackground(new java.awt.Color(19, 255, 230));
+        jButton7.setBackground(new java.awt.Color(92, 225, 230));
         jButton7.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 18)); // NOI18N
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-city-32.png"))); // NOI18N
         jButton7.setText("Apartment");
-        jButton7.setBorder(null);
-        jButton7.setBorderPainted(false);
+        jButton7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jButton7.setFocusPainted(false);
         jButton7.setFocusable(false);
         jButton7.setIconTextGap(10);
         jButton7.addActionListener(new java.awt.event.ActionListener() {
@@ -362,12 +505,13 @@ public class UserDashboard extends javax.swing.JFrame {
                 jButton7ActionPerformed(evt);
             }
         });
-        sidebarpanel.add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, 240, 50));
+        sidebarpanel.add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 300, 230, 50));
 
-        jButton4.setBackground(new java.awt.Color(19, 255, 230));
+        jButton4.setBackground(new java.awt.Color(92, 225, 230));
         jButton4.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 18)); // NOI18N
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-rent-30.png"))); // NOI18N
         jButton4.setText("Units         ");
+        jButton4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jButton4.setFocusable(false);
         jButton4.setIconTextGap(10);
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -375,208 +519,27 @@ public class UserDashboard extends javax.swing.JFrame {
                 jButton4ActionPerformed(evt);
             }
         });
-        sidebarpanel.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 260, 240, 50));
+        sidebarpanel.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 360, 230, 50));
 
-        jLabel18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-person-60.png"))); // NOI18N
-        sidebarpanel.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 20, 130, -1));
+        jLabel18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/profile.png"))); // NOI18N
+        jLabel18.setIconTextGap(0);
+        sidebarpanel.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, 170, 190));
 
         jLabel19.setFont(new java.awt.Font("Yu Gothic UI Semibold", 1, 18)); // NOI18N
         jLabel19.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel19.setMaximumSize(new java.awt.Dimension(240, 30));
-        sidebarpanel.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, 240, 30));
+        sidebarpanel.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 220, 250, 30));
 
-        jPanel1.add(sidebarpanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 50, 240, 460));
+        jSeparator1.setForeground(new java.awt.Color(92, 225, 230));
+        jSeparator1.setEnabled(false);
+        jSeparator1.setRequestFocusEnabled(false);
+        jSeparator1.setVerifyInputWhenFocusTarget(false);
+        sidebarpanel.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 280, 250, 40));
+
+        jPanel1.add(sidebarpanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 50, 250, 570));
 
         dashboardpanels.setBackground(new java.awt.Color(19, 35, 53));
         dashboardpanels.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        addClearTenantP.setBackground(new java.awt.Color(19, 35, 53));
-        addClearTenantP.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel9.setFont(new java.awt.Font("Yu Gothic Medium", 1, 18)); // NOI18N
-        jLabel9.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel9.setText("Add Tenant");
-        addClearTenantP.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 80, 110, 27));
-
-        jLabel10.setFont(new java.awt.Font("Yu Gothic UI Semibold", 1, 16)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel10.setText("Tenant First Name ");
-        addClearTenantP.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 200, -1, -1));
-
-        jLabel11.setFont(new java.awt.Font("Yu Gothic UI Semibold", 1, 16)); // NOI18N
-        jLabel11.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel11.setText("Contact Number");
-        addClearTenantP.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 240, -1, -1));
-
-        addTFNameTF.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        addClearTenantP.add(addTFNameTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 200, 192, -1));
-
-        addTNumTF.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        addClearTenantP.add(addTNumTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 240, 192, -1));
-
-        jButton8.setBackground(new java.awt.Color(19, 255, 230));
-        jButton8.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        jButton8.setText("Add");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
-            }
-        });
-        addClearTenantP.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 320, 110, -1));
-
-        jLabel13.setFont(new java.awt.Font("Yu Gothic UI Semibold", 1, 16)); // NOI18N
-        jLabel13.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel13.setText("Tenant Last Name ");
-        addClearTenantP.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 160, -1, -1));
-
-        addTLNameTF.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        addClearTenantP.add(addTLNameTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 160, 192, -1));
-
-        back.setBackground(new java.awt.Color(19, 255, 230));
-        back.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        back.setForeground(new java.awt.Color(19, 35, 53));
-        back.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-back-arrow-24.png"))); // NOI18N
-        back.setText("Back");
-        back.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                backActionPerformed(evt);
-            }
-        });
-        addClearTenantP.add(back, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 410, 100, 30));
-
-        addTenantError.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 12)); // NOI18N
-        addTenantError.setForeground(new java.awt.Color(255, 0, 0));
-        addClearTenantP.add(addTenantError, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 120, 190, 20));
-
-        dashboardpanels.add(addClearTenantP, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 570, 460));
-
-        viewpanel.setBackground(new java.awt.Color(19, 35, 53));
-        viewpanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        unitNameLO.setBackground(new java.awt.Color(19, 35, 53));
-        unitNameLO.setFont(new java.awt.Font("Yu Gothic Medium", 1, 18)); // NOI18N
-        unitNameLO.setForeground(new java.awt.Color(255, 255, 255));
-        unitNameLO.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        unitNameLO.setOpaque(true);
-        viewpanel.add(unitNameLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 570, 30));
-
-        tenantNameL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        tenantNameL.setForeground(new java.awt.Color(255, 255, 255));
-        tenantNameL.setText("Tenant Name");
-        viewpanel.add(tenantNameL, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 180, -1, -1));
-
-        tenantNameLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        tenantNameLO.setForeground(new java.awt.Color(255, 255, 255));
-        tenantNameLO.setText("jLabel12");
-        viewpanel.add(tenantNameLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 180, -1, -1));
-
-        unitpriceL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        unitpriceL.setForeground(new java.awt.Color(255, 255, 255));
-        unitpriceL.setText("Unit Price");
-        viewpanel.add(unitpriceL, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 90, -1, -1));
-
-        unitpriceLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        unitpriceLO.setForeground(new java.awt.Color(255, 255, 255));
-        unitpriceLO.setText("jLabel12");
-        viewpanel.add(unitpriceLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 90, -1, -1));
-
-        unittypeL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        unittypeL.setForeground(new java.awt.Color(255, 255, 255));
-        unittypeL.setText("Unit type");
-        viewpanel.add(unittypeL, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 120, -1, -1));
-
-        unittypeLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        unittypeLO.setForeground(new java.awt.Color(255, 255, 255));
-        unittypeLO.setText("jLabel12");
-        viewpanel.add(unittypeLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 120, -1, -1));
-
-        balanceL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        balanceL.setForeground(new java.awt.Color(255, 255, 255));
-        balanceL.setText("Balance");
-        viewpanel.add(balanceL, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 150, -1, -1));
-
-        balanceLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        balanceLO.setForeground(new java.awt.Color(255, 255, 255));
-        balanceLO.setText("jLabel12");
-        viewpanel.add(balanceLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 150, -1, -1));
-
-        lastPaymentL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        lastPaymentL.setForeground(new java.awt.Color(255, 255, 255));
-        lastPaymentL.setText("Last Payment");
-        viewpanel.add(lastPaymentL, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 270, -1, -1));
-
-        lastPaymentLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        lastPaymentLO.setForeground(new java.awt.Color(255, 255, 255));
-        lastPaymentLO.setText("jLabel12");
-        viewpanel.add(lastPaymentLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 270, -1, -1));
-
-        contactL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        contactL.setForeground(new java.awt.Color(255, 255, 255));
-        contactL.setText("Contact No.");
-        viewpanel.add(contactL, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 210, -1, -1));
-
-        contactLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        contactLO.setForeground(new java.awt.Color(255, 255, 255));
-        contactLO.setText("jLabel12");
-        viewpanel.add(contactLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 210, -1, -1));
-
-        depositL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        depositL.setForeground(new java.awt.Color(255, 255, 255));
-        depositL.setText("Deposit / Advance");
-        viewpanel.add(depositL, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 240, -1, -1));
-
-        depositLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        depositLO.setForeground(new java.awt.Color(255, 255, 255));
-        depositLO.setText("jLabel12");
-        viewpanel.add(depositLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 240, -1, -1));
-
-        BillingB.setBackground(new java.awt.Color(19, 255, 230));
-        BillingB.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        BillingB.setText("Billing");
-        BillingB.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BillingBActionPerformed(evt);
-            }
-        });
-        viewpanel.add(BillingB, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 330, 100, 30));
-
-        PaymentB.setBackground(new java.awt.Color(19, 255, 230));
-        PaymentB.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        PaymentB.setText("Payment");
-        PaymentB.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PaymentBActionPerformed(evt);
-            }
-        });
-        viewpanel.add(PaymentB, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 330, 100, 30));
-
-        AddClearB.setBackground(new java.awt.Color(19, 255, 230));
-        AddClearB.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        AddClearB.setText("AddClearB");
-        AddClearB.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AddClearBActionPerformed(evt);
-            }
-        });
-        viewpanel.add(AddClearB, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 330, 120, 30));
-
-        back2.setBackground(new java.awt.Color(19, 255, 230));
-        back2.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        back2.setForeground(new java.awt.Color(19, 35, 53));
-        back2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-back-arrow-24.png"))); // NOI18N
-        back2.setText("Back");
-        back2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                back2ActionPerformed(evt);
-            }
-        });
-        viewpanel.add(back2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 410, 100, 30));
-
-        ClearError.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 12)); // NOI18N
-        ClearError.setForeground(new java.awt.Color(255, 0, 0));
-        viewpanel.add(ClearError, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 370, 360, 30));
-
-        dashboardpanels.add(viewpanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 570, 460));
 
         unitpanel.setBackground(new java.awt.Color(19, 35, 53));
         unitpanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -604,30 +567,14 @@ public class UserDashboard extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jList1);
 
-        unitpanel.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 70, 430, 200));
+        unitpanel.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 200, 380, 180));
 
         jLabel3.setFont(new java.awt.Font("Yu Gothic Medium", 1, 18)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setForeground(new java.awt.Color(19, 35, 53));
         jLabel3.setText("Apartment Units");
-        unitpanel.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 30, -1, -1));
+        unitpanel.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 120, -1, -1));
 
-        jLabel4.setFont(new java.awt.Font("Yu Gothic Medium", 1, 18)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        unitpanel.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 280, -1, -1));
-
-        unitPriceLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        unitPriceLO.setForeground(new java.awt.Color(255, 255, 255));
-        unitpanel.add(unitPriceLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 320, 130, 20));
-
-        statusLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        statusLO.setForeground(new java.awt.Color(255, 255, 255));
-        unitpanel.add(statusLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 350, 130, 20));
-
-        tenantLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        tenantLO.setForeground(new java.awt.Color(255, 255, 255));
-        unitpanel.add(tenantLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 380, 130, 20));
-
-        addB.setBackground(new java.awt.Color(19, 255, 230));
+        addB.setBackground(new java.awt.Color(92, 225, 230));
         addB.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
         addB.setText("Add Unit");
         addB.setToolTipText("");
@@ -636,20 +583,9 @@ public class UserDashboard extends javax.swing.JFrame {
                 addBActionPerformed(evt);
             }
         });
-        unitpanel.add(addB, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 330, -1, -1));
+        unitpanel.add(addB, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 420, -1, -1));
 
-        viewB.setBackground(new java.awt.Color(19, 255, 230));
-        viewB.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        viewB.setText("View");
-        viewB.setToolTipText("");
-        viewB.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewBActionPerformed(evt);
-            }
-        });
-        unitpanel.add(viewB, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 280, 90, -1));
-
-        deleteB.setBackground(new java.awt.Color(19, 255, 230));
+        deleteB.setBackground(new java.awt.Color(92, 225, 230));
         deleteB.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
         deleteB.setText("Delete");
         deleteB.addActionListener(new java.awt.event.ActionListener() {
@@ -657,77 +593,88 @@ public class UserDashboard extends javax.swing.JFrame {
                 deleteBActionPerformed(evt);
             }
         });
-        unitpanel.add(deleteB, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 380, 90, -1));
+        unitpanel.add(deleteB, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 420, 90, -1));
 
-        dashboardpanels.add(unitpanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 570, 460));
-
-        billingpanel.setBackground(new java.awt.Color(19, 35, 53));
-        billingpanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel14.setFont(new java.awt.Font("Yu Gothic Medium", 1, 18)); // NOI18N
-        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel14.setText("Billing");
-        billingpanel.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 20, -1, -1));
-
-        jLabel15.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        jLabel15.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel15.setText("Enter Water Bill");
-        billingpanel.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 70, -1, -1));
-
-        jLabel16.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        jLabel16.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel16.setText("Enter Electric Bill");
-        billingpanel.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 100, -1, -1));
-
-        waterTF.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        billingpanel.add(waterTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 70, 160, 20));
-
-        electricTF.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        billingpanel.add(electricTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 100, 160, 20));
-
-        genBillB.setBackground(new java.awt.Color(19, 255, 230));
-        genBillB.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        genBillB.setText("Generate Bill");
-        genBillB.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                genBillBActionPerformed(evt);
+        jTextField1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 12)); // NOI18N
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField1KeyReleased(evt);
             }
         });
-        billingpanel.add(genBillB, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 80, -1, -1));
+        unitpanel.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 170, 280, 20));
 
-        BillTA.setColumns(20);
-        BillTA.setRows(5);
-        jScrollPane2.setViewportView(BillTA);
+        jLabel12.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        jLabel12.setForeground(new java.awt.Color(19, 35, 53));
+        jLabel12.setText("Search / Filter");
+        unitpanel.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 160, -1, 40));
 
-        billingpanel.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(23, 142, 524, 200));
+        jLabel24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/bg.png"))); // NOI18N
+        unitpanel.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
-        printBillB.setBackground(new java.awt.Color(19, 255, 230));
-        printBillB.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        printBillB.setText("Print Bill");
-        printBillB.addActionListener(new java.awt.event.ActionListener() {
+        dashboardpanels.add(unitpanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 570));
+
+        addClearTenantP.setBackground(new java.awt.Color(19, 35, 53));
+        addClearTenantP.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel9.setFont(new java.awt.Font("Yu Gothic Medium", 1, 18)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(19, 35, 53));
+        jLabel9.setText("Add Tenant");
+        addClearTenantP.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 150, 110, 27));
+
+        jLabel10.setFont(new java.awt.Font("Yu Gothic UI Semibold", 1, 16)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(19, 35, 53));
+        jLabel10.setText("Tenant First Name ");
+        addClearTenantP.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 260, -1, -1));
+
+        jLabel11.setFont(new java.awt.Font("Yu Gothic UI Semibold", 1, 16)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(19, 35, 53));
+        jLabel11.setText("Contact Number");
+        addClearTenantP.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 300, -1, -1));
+
+        addTFNameTF.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        addClearTenantP.add(addTFNameTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 260, 192, -1));
+
+        addTNumTF.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        addClearTenantP.add(addTNumTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 300, 192, -1));
+
+        jButton8.setBackground(new java.awt.Color(19, 255, 230));
+        jButton8.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        jButton8.setText("Add");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                printBillBActionPerformed(evt);
+                jButton8ActionPerformed(evt);
             }
         });
-        billingpanel.add(printBillB, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 360, -1, -1));
+        addClearTenantP.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 380, 110, -1));
 
-        back4.setBackground(new java.awt.Color(19, 255, 230));
-        back4.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        back4.setForeground(new java.awt.Color(19, 35, 53));
-        back4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-back-arrow-24.png"))); // NOI18N
-        back4.setText("Back");
-        back4.addActionListener(new java.awt.event.ActionListener() {
+        jLabel13.setFont(new java.awt.Font("Yu Gothic UI Semibold", 1, 16)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(19, 35, 53));
+        jLabel13.setText("Tenant Last Name ");
+        addClearTenantP.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 220, -1, -1));
+
+        addTLNameTF.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        addClearTenantP.add(addTLNameTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 220, 192, -1));
+
+        back.setBackground(new java.awt.Color(19, 255, 230));
+        back.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        back.setForeground(new java.awt.Color(19, 35, 53));
+        back.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-back-arrow-24.png"))); // NOI18N
+        back.setText("Back");
+        back.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                back4ActionPerformed(evt);
+                backActionPerformed(evt);
             }
         });
-        billingpanel.add(back4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 410, 100, 30));
+        addClearTenantP.add(back, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 520, 100, 30));
 
-        BillingError.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 12)); // NOI18N
-        BillingError.setForeground(new java.awt.Color(255, 0, 0));
-        billingpanel.add(BillingError, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 30, 170, 20));
+        addTenantError.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 12)); // NOI18N
+        addTenantError.setForeground(new java.awt.Color(255, 0, 0));
+        addClearTenantP.add(addTenantError, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 120, 190, 20));
 
-        dashboardpanels.add(billingpanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 570, 460));
+        jLabel27.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/bg.png"))); // NOI18N
+        addClearTenantP.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
+        dashboardpanels.add(addClearTenantP, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 570));
 
         paymentPanel.setBackground(new java.awt.Color(19, 35, 53));
         paymentPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -735,25 +682,25 @@ public class UserDashboard extends javax.swing.JFrame {
         jLabel17.setFont(new java.awt.Font("Yu Gothic Medium", 1, 18)); // NOI18N
         jLabel17.setForeground(new java.awt.Color(255, 255, 255));
         jLabel17.setText("Payment");
-        paymentPanel.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 20, -1, -1));
+        paymentPanel.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 50, -1, -1));
 
         rentPayL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
         rentPayL.setForeground(new java.awt.Color(255, 255, 255));
         rentPayL.setText("Rent ");
-        paymentPanel.add(rentPayL, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 70, -1, -1));
+        paymentPanel.add(rentPayL, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 130, -1, -1));
 
         rentPayL1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
         rentPayL1.setForeground(new java.awt.Color(255, 255, 255));
         rentPayL1.setText("Water");
-        paymentPanel.add(rentPayL1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 100, -1, -1));
+        paymentPanel.add(rentPayL1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 160, -1, -1));
 
         rentPayL2.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
         rentPayL2.setForeground(new java.awt.Color(255, 255, 255));
         rentPayL2.setText("Electicity");
-        paymentPanel.add(rentPayL2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 130, -1, -1));
+        paymentPanel.add(rentPayL2, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 190, -1, -1));
 
         rentPTF.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        paymentPanel.add(rentPTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 70, 148, 20));
+        paymentPanel.add(rentPTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 130, 148, 20));
 
         waterPTF.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
         waterPTF.addActionListener(new java.awt.event.ActionListener() {
@@ -761,15 +708,15 @@ public class UserDashboard extends javax.swing.JFrame {
                 waterPTFActionPerformed(evt);
             }
         });
-        paymentPanel.add(waterPTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 100, 148, 20));
+        paymentPanel.add(waterPTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 160, 148, 20));
 
         elecPTF.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        paymentPanel.add(elecPTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 130, 148, 20));
+        paymentPanel.add(elecPTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 190, 148, 20));
 
         useAdvanceB.setBackground(new java.awt.Color(19, 255, 230));
         useAdvanceB.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 12)); // NOI18N
         useAdvanceB.setText("Use Advance");
-        paymentPanel.add(useAdvanceB, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 70, -1, -1));
+        paymentPanel.add(useAdvanceB, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 130, 100, -1));
 
         genReceiptB.setBackground(new java.awt.Color(19, 255, 230));
         genReceiptB.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
@@ -779,13 +726,13 @@ public class UserDashboard extends javax.swing.JFrame {
                 genReceiptBActionPerformed(evt);
             }
         });
-        paymentPanel.add(genReceiptB, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 120, -1, -1));
+        paymentPanel.add(genReceiptB, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 170, 210, -1));
 
         paymentTA.setColumns(20);
         paymentTA.setRows(5);
         jScrollPane3.setViewportView(paymentTA);
 
-        paymentPanel.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(24, 162, 520, 190));
+        paymentPanel.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 240, 520, 190));
 
         printPB.setBackground(new java.awt.Color(19, 255, 230));
         printPB.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
@@ -795,12 +742,12 @@ public class UserDashboard extends javax.swing.JFrame {
                 printPBActionPerformed(evt);
             }
         });
-        paymentPanel.add(printPB, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 370, 90, -1));
+        paymentPanel.add(printPB, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 460, 120, -1));
 
         addToAdvance.setBackground(new java.awt.Color(19, 255, 230));
         addToAdvance.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 12)); // NOI18N
         addToAdvance.setText("Add Advance");
-        paymentPanel.add(addToAdvance, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 70, -1, -1));
+        paymentPanel.add(addToAdvance, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 130, 100, -1));
 
         back5.setBackground(new java.awt.Color(19, 255, 230));
         back5.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
@@ -812,47 +759,119 @@ public class UserDashboard extends javax.swing.JFrame {
                 back5ActionPerformed(evt);
             }
         });
-        paymentPanel.add(back5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 410, 100, 30));
+        paymentPanel.add(back5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 520, 100, 30));
 
         PaymentError.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 12)); // NOI18N
         PaymentError.setForeground(new java.awt.Color(255, 0, 0));
-        paymentPanel.add(PaymentError, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 40, 160, 20));
+        paymentPanel.add(PaymentError, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 90, 160, 20));
 
-        dashboardpanels.add(paymentPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 570, 460));
+        dashboardpanels.add(paymentPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 570));
+
+        billingpanel.setBackground(new java.awt.Color(19, 35, 53));
+        billingpanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel14.setFont(new java.awt.Font("Yu Gothic Medium", 1, 18)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel14.setText("Billing");
+        billingpanel.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 40, -1, -1));
+
+        jLabel15.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel15.setText("Enter Water Bill");
+        billingpanel.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 130, -1, -1));
+
+        jLabel16.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        jLabel16.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel16.setText("Enter Electric Bill");
+        billingpanel.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 160, -1, -1));
+
+        waterTF.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        billingpanel.add(waterTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 130, 160, 20));
+
+        electricTF.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        billingpanel.add(electricTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 160, 160, 20));
+
+        genBillB.setBackground(new java.awt.Color(19, 255, 230));
+        genBillB.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        genBillB.setText("Generate Bill");
+        genBillB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                genBillBActionPerformed(evt);
+            }
+        });
+        billingpanel.add(genBillB, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 140, -1, -1));
+
+        BillTA.setColumns(20);
+        BillTA.setRows(5);
+        jScrollPane2.setViewportView(BillTA);
+
+        billingpanel.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 220, 524, 200));
+
+        printBillB.setBackground(new java.awt.Color(19, 255, 230));
+        printBillB.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        printBillB.setText("Print Bill");
+        printBillB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                printBillBActionPerformed(evt);
+            }
+        });
+        billingpanel.add(printBillB, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 440, -1, -1));
+
+        back4.setBackground(new java.awt.Color(19, 255, 230));
+        back4.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        back4.setForeground(new java.awt.Color(19, 35, 53));
+        back4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-back-arrow-24.png"))); // NOI18N
+        back4.setText("Back");
+        back4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                back4ActionPerformed(evt);
+            }
+        });
+        billingpanel.add(back4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 520, 100, 30));
+
+        BillingError.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 12)); // NOI18N
+        BillingError.setForeground(new java.awt.Color(255, 0, 0));
+        billingpanel.add(BillingError, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 90, 170, 20));
+
+        dashboardpanels.add(billingpanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 570));
 
         addUnitPanel.setBackground(new java.awt.Color(19, 35, 53));
         addUnitPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jLabel5.setBackground(new java.awt.Color(19, 35, 53));
         jLabel5.setFont(new java.awt.Font("Yu Gothic Medium", 1, 18)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel5.setForeground(new java.awt.Color(19, 35, 53));
         jLabel5.setText("Add Unit");
-        addUnitPanel.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 100, 80, 35));
+        addUnitPanel.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 150, 80, 35));
 
+        jLabel6.setBackground(new java.awt.Color(19, 35, 53));
         jLabel6.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel6.setForeground(new java.awt.Color(19, 35, 53));
         jLabel6.setText("Enter Unit Name");
-        addUnitPanel.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 170, -1, -1));
+        addUnitPanel.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 240, -1, -1));
 
+        jLabel7.setBackground(new java.awt.Color(19, 35, 53));
         jLabel7.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel7.setForeground(new java.awt.Color(19, 35, 53));
         jLabel7.setText("Enter Unit Price");
-        addUnitPanel.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 210, 130, 20));
+        addUnitPanel.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 280, 130, 20));
 
+        jLabel8.setBackground(new java.awt.Color(19, 35, 53));
         jLabel8.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel8.setForeground(new java.awt.Color(19, 35, 53));
         jLabel8.setText("Enter Unit Type");
-        addUnitPanel.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 250, 130, 20));
+        addUnitPanel.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 320, 130, 20));
 
         addUnitName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addUnitNameActionPerformed(evt);
             }
         });
-        addUnitPanel.add(addUnitName, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 170, 160, 20));
-        addUnitPanel.add(addUnitPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 210, 160, 20));
-        addUnitPanel.add(addUnitType, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 250, 160, 20));
+        addUnitPanel.add(addUnitName, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 240, 160, 20));
+        addUnitPanel.add(addUnitPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 280, 160, 20));
+        addUnitPanel.add(addUnitType, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 320, 160, 20));
 
-        jButton5.setBackground(new java.awt.Color(19, 255, 230));
+        jButton5.setBackground(new java.awt.Color(19, 225, 230));
         jButton5.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
         jButton5.setText("Submit");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -860,7 +879,7 @@ public class UserDashboard extends javax.swing.JFrame {
                 jButton5ActionPerformed(evt);
             }
         });
-        addUnitPanel.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 320, 110, 30));
+        addUnitPanel.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 390, 120, 30));
 
         back3.setBackground(new java.awt.Color(19, 255, 230));
         back3.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
@@ -872,54 +891,131 @@ public class UserDashboard extends javax.swing.JFrame {
                 back3ActionPerformed(evt);
             }
         });
-        addUnitPanel.add(back3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 410, 100, 30));
+        addUnitPanel.add(back3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 520, 100, 30));
 
         xxx.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 12)); // NOI18N
         xxx.setForeground(new java.awt.Color(255, 0, 0));
-        addUnitPanel.add(xxx, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 140, 190, 20));
+        addUnitPanel.add(xxx, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 170, 700, 20));
 
-        dashboardpanels.add(addUnitPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 570, 460));
+        jLabel26.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/bg.png"))); // NOI18N
+        addUnitPanel.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
+        dashboardpanels.add(addUnitPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 570));
+
+        apartpanel.setBackground(new java.awt.Color(19, 35, 53));
+        apartpanel.setForeground(new java.awt.Color(255, 255, 255));
+        apartpanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        nameApartL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        nameApartL.setForeground(new java.awt.Color(19, 35, 53));
+        nameApartL.setText("Name of Apartment");
+        apartpanel.add(nameApartL, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 200, -1, -1));
+
+        addressL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        addressL.setForeground(new java.awt.Color(19, 35, 53));
+        addressL.setText("Address");
+        apartpanel.add(addressL, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 240, -1, -1));
+
+        numofunitsL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        numofunitsL.setForeground(new java.awt.Color(19, 35, 53));
+        numofunitsL.setText("No. of Units");
+        apartpanel.add(numofunitsL, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 290, -1, -1));
+
+        nameApartLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        nameApartLO.setForeground(new java.awt.Color(19, 35, 53));
+        nameApartLO.setText("jLabel29");
+        apartpanel.add(nameApartLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 200, -1, -1));
+
+        numofunitsLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        numofunitsLO.setForeground(new java.awt.Color(19, 35, 53));
+        numofunitsLO.setText("jLabel31");
+        apartpanel.add(numofunitsLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 290, -1, -1));
+
+        ownerL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        ownerL.setForeground(new java.awt.Color(19, 35, 53));
+        ownerL.setText("Owner");
+        apartpanel.add(ownerL, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 330, -1, -1));
+
+        ownerLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        ownerLO.setForeground(new java.awt.Color(19, 35, 53));
+        ownerLO.setText("jLabel33");
+        apartpanel.add(ownerLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 330, -1, -1));
+
+        editApartmentB.setBackground(new java.awt.Color(92, 225, 230));
+        editApartmentB.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        editApartmentB.setText("Edit");
+        editApartmentB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editApartmentBActionPerformed(evt);
+            }
+        });
+        apartpanel.add(editApartmentB, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 410, 110, 30));
+
+        jLabel21.setFont(new java.awt.Font("Yu Gothic Medium", 1, 18)); // NOI18N
+        jLabel21.setForeground(new java.awt.Color(19, 35, 53));
+        jLabel21.setText("Apartment Details");
+        jLabel21.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        apartpanel.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 90, 190, 90));
+
+        jTextArea1.setEditable(false);
+        jTextArea1.setBackground(new java.awt.Color(240, 240, 240));
+        jTextArea1.setColumns(20);
+        jTextArea1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        jTextArea1.setForeground(new java.awt.Color(19, 35, 53));
+        jTextArea1.setLineWrap(true);
+        jTextArea1.setRows(5);
+        jTextArea1.setWrapStyleWord(true);
+        jTextArea1.setBorder(null);
+        jTextArea1.setFocusable(false);
+        jTextArea1.setOpaque(false);
+        apartpanel.add(jTextArea1, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 230, 260, 60));
+
+        jLabel23.setBackground(new java.awt.Color(164, 177, 189));
+        jLabel23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/bg.png"))); // NOI18N
+        apartpanel.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
+        dashboardpanels.add(apartpanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 570));
 
         editApartmentP.setBackground(new java.awt.Color(19, 35, 53));
         editApartmentP.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         nameApartL1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        nameApartL1.setForeground(new java.awt.Color(255, 255, 255));
+        nameApartL1.setForeground(new java.awt.Color(19, 35, 53));
         nameApartL1.setText("Name of Apartment");
-        editApartmentP.add(nameApartL1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 160, -1, -1));
+        editApartmentP.add(nameApartL1, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 200, -1, -1));
 
         addressL1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        addressL1.setForeground(new java.awt.Color(255, 255, 255));
+        addressL1.setForeground(new java.awt.Color(19, 35, 53));
         addressL1.setText("Address");
-        editApartmentP.add(addressL1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 200, -1, -1));
+        editApartmentP.add(addressL1, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 240, -1, -1));
 
         numofunitsL1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        numofunitsL1.setForeground(new java.awt.Color(255, 255, 255));
+        numofunitsL1.setForeground(new java.awt.Color(19, 35, 53));
         numofunitsL1.setText("No. of Units");
-        editApartmentP.add(numofunitsL1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 240, -1, -1));
+        editApartmentP.add(numofunitsL1, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 280, -1, -1));
 
         ownerL1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        ownerL1.setForeground(new java.awt.Color(255, 255, 255));
+        ownerL1.setForeground(new java.awt.Color(19, 35, 53));
         ownerL1.setText("Owner");
-        editApartmentP.add(ownerL1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 280, -1, -1));
+        editApartmentP.add(ownerL1, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 320, -1, -1));
 
         editANameTF.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        editApartmentP.add(editANameTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 160, 194, -1));
+        editApartmentP.add(editANameTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 200, 194, -1));
 
         editAAddTF.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        editApartmentP.add(editAAddTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 200, 194, -1));
+        editApartmentP.add(editAAddTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 240, 194, -1));
 
         numofunitsLO1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        numofunitsLO1.setForeground(new java.awt.Color(255, 255, 255));
+        numofunitsLO1.setForeground(new java.awt.Color(19, 35, 53));
         numofunitsLO1.setText("jLabel31");
-        editApartmentP.add(numofunitsLO1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 240, -1, -1));
+        editApartmentP.add(numofunitsLO1, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 280, -1, -1));
 
         ownerLO1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        ownerLO1.setForeground(new java.awt.Color(255, 255, 255));
+        ownerLO1.setForeground(new java.awt.Color(19, 35, 53));
         ownerLO1.setText("jLabel33");
-        editApartmentP.add(ownerLO1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 280, -1, -1));
+        editApartmentP.add(ownerLO1, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 320, -1, -1));
 
-        jButton6.setBackground(new java.awt.Color(19, 255, 250));
+        jButton6.setBackground(new java.awt.Color(92, 225, 230));
         jButton6.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
         jButton6.setText("Save");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
@@ -927,14 +1023,14 @@ public class UserDashboard extends javax.swing.JFrame {
                 jButton6ActionPerformed(evt);
             }
         });
-        editApartmentP.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 350, 90, 30));
+        editApartmentP.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 410, 90, 30));
 
         jLabel20.setFont(new java.awt.Font("Yu Gothic Medium", 1, 18)); // NOI18N
-        jLabel20.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel20.setForeground(new java.awt.Color(19, 35, 53));
         jLabel20.setText("Edit Apartment Details");
-        editApartmentP.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 60, -1, -1));
+        editApartmentP.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 120, -1, -1));
 
-        back1.setBackground(new java.awt.Color(19, 255, 230));
+        back1.setBackground(new java.awt.Color(92, 225, 230));
         back1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
         back1.setForeground(new java.awt.Color(19, 35, 53));
         back1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-back-arrow-24.png"))); // NOI18N
@@ -944,80 +1040,159 @@ public class UserDashboard extends javax.swing.JFrame {
                 back1ActionPerformed(evt);
             }
         });
-        editApartmentP.add(back1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 410, 100, 30));
+        editApartmentP.add(back1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 520, 100, 30));
 
-        dashboardpanels.add(editApartmentP, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 570, 460));
+        jLabel25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/bg.png"))); // NOI18N
+        editApartmentP.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
-        apartpanel.setBackground(new java.awt.Color(19, 35, 53));
-        apartpanel.setForeground(new java.awt.Color(255, 255, 255));
-        apartpanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        dashboardpanels.add(editApartmentP, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 570));
 
-        nameApartL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        nameApartL.setForeground(new java.awt.Color(255, 255, 255));
-        nameApartL.setText("Name of Apartment");
-        apartpanel.add(nameApartL, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 150, -1, -1));
+        viewpanel.setBackground(new java.awt.Color(19, 35, 53));
+        viewpanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        addressL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        addressL.setForeground(new java.awt.Color(255, 255, 255));
-        addressL.setText("Address");
-        apartpanel.add(addressL, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 190, -1, -1));
+        unitNameLO.setBackground(new java.awt.Color(19, 35, 53));
+        unitNameLO.setFont(new java.awt.Font("Yu Gothic Medium", 1, 18)); // NOI18N
+        unitNameLO.setForeground(new java.awt.Color(19, 35, 53));
+        unitNameLO.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        viewpanel.add(unitNameLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 120, 520, 30));
 
-        numofunitsL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        numofunitsL.setForeground(new java.awt.Color(255, 255, 255));
-        numofunitsL.setText("No. of Units");
-        apartpanel.add(numofunitsL, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 230, -1, -1));
+        tenantNameL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        tenantNameL.setForeground(new java.awt.Color(19, 35, 53));
+        tenantNameL.setText("Tenant Name");
+        viewpanel.add(tenantNameL, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 260, -1, -1));
 
-        nameApartLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        nameApartLO.setForeground(new java.awt.Color(255, 255, 255));
-        nameApartLO.setText("jLabel29");
-        apartpanel.add(nameApartLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 150, -1, -1));
+        tenantNameLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        tenantNameLO.setForeground(new java.awt.Color(19, 35, 53));
+        tenantNameLO.setText("jLabel12");
+        tenantNameLO.setPreferredSize(new java.awt.Dimension(200, 22));
+        viewpanel.add(tenantNameLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 260, -1, -1));
 
-        addressLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        addressLO.setForeground(new java.awt.Color(255, 255, 255));
-        addressLO.setText("jLabel30");
-        apartpanel.add(addressLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 190, -1, -1));
+        unitpriceL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        unitpriceL.setForeground(new java.awt.Color(19, 35, 53));
+        unitpriceL.setText("Unit Price");
+        viewpanel.add(unitpriceL, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 170, -1, -1));
 
-        numofunitsLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        numofunitsLO.setForeground(new java.awt.Color(255, 255, 255));
-        numofunitsLO.setText("jLabel31");
-        apartpanel.add(numofunitsLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 230, -1, -1));
+        unitpriceLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        unitpriceLO.setForeground(new java.awt.Color(19, 35, 53));
+        unitpriceLO.setText("jLabel12");
+        unitpriceLO.setPreferredSize(new java.awt.Dimension(200, 22));
+        viewpanel.add(unitpriceLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 170, -1, -1));
 
-        ownerL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        ownerL.setForeground(new java.awt.Color(255, 255, 255));
-        ownerL.setText("Owner");
-        apartpanel.add(ownerL, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 270, -1, -1));
+        unittypeL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        unittypeL.setForeground(new java.awt.Color(19, 35, 53));
+        unittypeL.setText("Unit type");
+        viewpanel.add(unittypeL, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 200, -1, -1));
 
-        ownerLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
-        ownerLO.setForeground(new java.awt.Color(255, 255, 255));
-        ownerLO.setText("jLabel33");
-        apartpanel.add(ownerLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 270, -1, -1));
+        unittypeLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        unittypeLO.setForeground(new java.awt.Color(19, 35, 53));
+        unittypeLO.setText("jLabel12");
+        unittypeLO.setPreferredSize(new java.awt.Dimension(200, 22));
+        viewpanel.add(unittypeLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 200, -1, -1));
 
-        editApartmentB.setBackground(new java.awt.Color(19, 255, 230));
-        editApartmentB.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
-        editApartmentB.setText("Edit");
-        editApartmentB.addActionListener(new java.awt.event.ActionListener() {
+        balanceL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        balanceL.setForeground(new java.awt.Color(19, 35, 53));
+        balanceL.setText("Balance");
+        viewpanel.add(balanceL, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 230, -1, -1));
+
+        balanceLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        balanceLO.setForeground(new java.awt.Color(19, 35, 53));
+        balanceLO.setText("jLabel12");
+        balanceLO.setPreferredSize(new java.awt.Dimension(200, 22));
+        viewpanel.add(balanceLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 230, -1, -1));
+
+        lastPaymentL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        lastPaymentL.setForeground(new java.awt.Color(19, 35, 53));
+        lastPaymentL.setText("Last Payment");
+        viewpanel.add(lastPaymentL, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 350, -1, -1));
+
+        lastPaymentLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        lastPaymentLO.setForeground(new java.awt.Color(19, 35, 53));
+        lastPaymentLO.setText("jLabel12");
+        lastPaymentLO.setPreferredSize(new java.awt.Dimension(200, 22));
+        viewpanel.add(lastPaymentLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 350, -1, -1));
+
+        contactL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        contactL.setForeground(new java.awt.Color(19, 35, 53));
+        contactL.setText("Contact No.");
+        viewpanel.add(contactL, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 290, -1, -1));
+
+        contactLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        contactLO.setForeground(new java.awt.Color(19, 35, 53));
+        contactLO.setText("jLabel12");
+        contactLO.setPreferredSize(new java.awt.Dimension(200, 22));
+        viewpanel.add(contactLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 290, -1, -1));
+
+        depositL.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        depositL.setForeground(new java.awt.Color(19, 35, 53));
+        depositL.setText("Deposit / Advance");
+        viewpanel.add(depositL, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 320, -1, -1));
+
+        depositLO.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 16)); // NOI18N
+        depositLO.setForeground(new java.awt.Color(19, 35, 53));
+        depositLO.setText("jLabel12");
+        depositLO.setPreferredSize(new java.awt.Dimension(200, 22));
+        viewpanel.add(depositLO, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 320, -1, -1));
+
+        BillingB.setBackground(new java.awt.Color(92, 225, 230));
+        BillingB.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        BillingB.setText("Billing");
+        BillingB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editApartmentBActionPerformed(evt);
+                BillingBActionPerformed(evt);
             }
         });
-        apartpanel.add(editApartmentB, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 350, 110, 30));
+        viewpanel.add(BillingB, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 400, 110, 30));
 
-        jLabel21.setFont(new java.awt.Font("Yu Gothic Medium", 1, 18)); // NOI18N
-        jLabel21.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel21.setText("Apartment Details");
-        apartpanel.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 60, -1, -1));
+        PaymentB.setBackground(new java.awt.Color(92, 225, 230));
+        PaymentB.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        PaymentB.setText("Payment");
+        PaymentB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PaymentBActionPerformed(evt);
+            }
+        });
+        viewpanel.add(PaymentB, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 400, 110, 30));
 
-        dashboardpanels.add(apartpanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 570, 460));
+        AddClearB.setBackground(new java.awt.Color(92, 225, 230));
+        AddClearB.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        AddClearB.setText("AddClearB");
+        AddClearB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddClearBActionPerformed(evt);
+            }
+        });
+        viewpanel.add(AddClearB, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 400, 120, 30));
+
+        back2.setBackground(new java.awt.Color(92, 225, 230));
+        back2.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 14)); // NOI18N
+        back2.setForeground(new java.awt.Color(19, 35, 53));
+        back2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8-back-arrow-24.png"))); // NOI18N
+        back2.setText("Back");
+        back2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                back2ActionPerformed(evt);
+            }
+        });
+        viewpanel.add(back2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 520, 100, 30));
+
+        ClearError.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 12)); // NOI18N
+        ClearError.setForeground(new java.awt.Color(255, 0, 0));
+        viewpanel.add(ClearError, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 360, 360, 30));
+
+        jLabel22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/bg.png"))); // NOI18N
+        viewpanel.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
+        dashboardpanels.add(viewpanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 570));
 
         logopanel.setBackground(new java.awt.Color(19, 35, 53));
         logopanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Blue Icon Construction Logo.png"))); // NOI18N
-        logopanel.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 30, -1, -1));
+        logopanel.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 80, -1, -1));
 
-        dashboardpanels.add(logopanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 570, 460));
+        dashboardpanels.add(logopanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 570));
 
-        jPanel1.add(dashboardpanels, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 50, 570, 460));
+        jPanel1.add(dashboardpanels, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 50, 700, 570));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -1042,6 +1217,7 @@ public class UserDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        jFrame1.setVisible(false);
         addUnitPanel.setVisible(false);
         editApartmentP.setVisible(false);
         apartpanel.setVisible(false); 
@@ -1082,7 +1258,11 @@ public class UserDashboard extends javax.swing.JFrame {
         ClearError.setText("");
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    
+    
+    
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        jFrame1.setVisible(false);
         addUnitPanel.setVisible(false);
         editApartmentP.setVisible(false);
         logopanel.setVisible(false);
@@ -1147,7 +1327,8 @@ public class UserDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_addBActionPerformed
     
     
-    private void viewBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewBActionPerformed
+    private void closebActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closebActionPerformed
+        jFrame1.setVisible(false);
         if(jList1.getSelectedValue() != null)
         {    
             unitpanel.setVisible(false);
@@ -1202,7 +1383,7 @@ public class UserDashboard extends javax.swing.JFrame {
                             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
                             strDate = dateFormat.format(date);
                         }
-                        catch(SQLException ee)
+                        catch(NullPointerException ee)
                         {
                             strDate = "";
                         }
@@ -1275,11 +1456,12 @@ public class UserDashboard extends javax.swing.JFrame {
             }
         }
         
-    }//GEN-LAST:event_viewBActionPerformed
+    }//GEN-LAST:event_closebActionPerformed
 
     private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
         String unitName = jList1.getSelectedValue();
-       
+        
+        
         String query = "SELECT * from units WHERE unit_name = ? AND apartment_id = ?";
         try
         {
@@ -1305,13 +1487,19 @@ public class UserDashboard extends javax.swing.JFrame {
                 }
                 if(tenantName.isEmpty())
                 {
+                    jFrame1.setVisible(true);
                     jLabel4.setText("Unit Details");
+                    jLabel4.setHorizontalAlignment(SwingConstants.CENTER);
+                    jLabel4.setVerticalAlignment(SwingConstants.CENTER);
                     statusLO.setText("Status: Unoccupied");
                     tenantLO.setText("Tenant: ");
                 }
                 else
                 {
+                    jFrame1.setVisible(true);
                     jLabel4.setText("Unit Details");
+                    jLabel4.setHorizontalAlignment(SwingConstants.CENTER);
+                    jLabel4.setVerticalAlignment(SwingConstants.CENTER);
                     statusLO.setText("Status: Occupied");
                     tenantLO.setText("Tenant: " + tenantName);                  
                 }
@@ -1399,7 +1587,7 @@ public class UserDashboard extends javax.swing.JFrame {
         if(addUnitName.getText().isEmpty() || addUnitPrice.getText().isEmpty() || addUnitType.getText().isEmpty())
         {
             xxx.setVisible(true);
-            xxx.setText("All Fields are Reuired");
+            xxx.setText("All Fields are Required");
         }
         else
         {
@@ -1480,6 +1668,8 @@ public class UserDashboard extends javax.swing.JFrame {
             {
                 xxx.setVisible(true);
                 xxx.setText("Invalid Unit Price");
+                xxx.setHorizontalAlignment(SwingConstants.CENTER);
+                xxx.setVerticalAlignment(SwingConstants.CENTER);
             }
         }
     }//GEN-LAST:event_jButton5ActionPerformed
@@ -1509,7 +1699,7 @@ public class UserDashboard extends javax.swing.JFrame {
             prep.execute();
             
             nameApartLO.setText(apartName);
-            addressLO.setText(apartAdd);
+            jTextArea1.setText(apartAdd);
             
             editApartmentP.setVisible(false);
             apartpanel.setVisible(true);
@@ -2153,6 +2343,7 @@ public class UserDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_back1ActionPerformed
 
     private void back2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_back2ActionPerformed
+       jFrame1.setVisible(false);
        viewpanel.setVisible(false);
        unitpanel.setVisible(true);
        jList1.clearSelection();
@@ -2194,6 +2385,14 @@ public class UserDashboard extends javax.swing.JFrame {
         waterPTF.setText("");
         elecPTF.setText("");
     }//GEN-LAST:event_back5ActionPerformed
+
+    private void viewB1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewB1ActionPerformed
+         jFrame1.setVisible(false);
+    }//GEN-LAST:event_viewB1ActionPerformed
+
+    private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
+        searchFilter(jTextField1.getText());
+    }//GEN-LAST:event_jTextField1KeyReleased
 
     /**
      * @param args the command line arguments
@@ -2252,7 +2451,6 @@ public class UserDashboard extends javax.swing.JFrame {
     private javax.swing.JTextField addUnitType;
     private javax.swing.JLabel addressL;
     private javax.swing.JLabel addressL1;
-    private javax.swing.JLabel addressLO;
     private javax.swing.JPanel apartpanel;
     private javax.swing.JButton back;
     private javax.swing.JButton back1;
@@ -2263,6 +2461,7 @@ public class UserDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel balanceL;
     private javax.swing.JLabel balanceLO;
     private javax.swing.JPanel billingpanel;
+    private javax.swing.JButton closeb;
     private javax.swing.JLabel contactL;
     private javax.swing.JLabel contactLO;
     private javax.swing.JPanel dashboardpanels;
@@ -2285,6 +2484,7 @@ public class UserDashboard extends javax.swing.JFrame {
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
+    private javax.swing.JFrame jFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -2299,6 +2499,12 @@ public class UserDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -2308,9 +2514,13 @@ public class UserDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lastPaymentL;
     private javax.swing.JLabel lastPaymentLO;
     private javax.swing.JPanel logopanel;
@@ -2347,7 +2557,7 @@ public class UserDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel unittypeL;
     private javax.swing.JLabel unittypeLO;
     private javax.swing.JRadioButton useAdvanceB;
-    private javax.swing.JButton viewB;
+    private javax.swing.JButton viewB1;
     private javax.swing.JPanel viewpanel;
     private javax.swing.JTextField waterPTF;
     private javax.swing.JTextField waterTF;

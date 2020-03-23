@@ -17,6 +17,7 @@ public class SplashScreen extends javax.swing.JFrame {
     public SplashScreen() {
         initComponents();
         setLocationRelativeTo(null);
+        
     }
 
     /**
@@ -30,23 +31,17 @@ public class SplashScreen extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        loadingpercent = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setIconImage(new javax.swing.ImageIcon(getClass().getResource("/images/logo.png")).getImage()
+        );
         setUndecorated(true);
-        setPreferredSize(new java.awt.Dimension(810, 510));
 
         jPanel1.setBackground(new java.awt.Color(19, 34, 53));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/splashscreen/Blue Icon Construction Logo.png"))); // NOI18N
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 120, -1, 240));
-
-        loadingpercent.setFont(new java.awt.Font("Yu Gothic UI Light", 0, 12)); // NOI18N
-        loadingpercent.setForeground(new java.awt.Color(255, 255, 255));
-        loadingpercent.setText("© 2020 Developer Team's Name  ");
-        loadingpercent.setToolTipText("");
-        jPanel1.add(loadingpercent, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 460, -1, -1));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 140, -1, 240));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -81,6 +76,5 @@ public class SplashScreen extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JLabel loadingpercent;
     // End of variables declaration//GEN-END:variables
 }
